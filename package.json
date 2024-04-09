@@ -54,7 +54,7 @@
     "eslint-config-prettier": "^8.8.0",
     "minimist": "^1.2.8",
     "prettier": "3.2.5",
-    "release-it": "^15.10.3",
+    "release-it": "^17.1.1",
     "replace-in-file": "^6.3.5",
     "typescript": "^5.0.4",
     "zotero-types": "^1.0.14"
