@@ -1,15 +1,15 @@
 {
-  "name": "zotero-addon-template",
-  "version": "0.1.6",
-  "description": "Zotero Addon Template",
+  "name": "zotero-ninja",
+  "version": "0.0.1",
+  "description": "A tidy toolbox",
   "config": {
-    "addonName": "Zotero Addon Template",
-    "addonID": "addontemplate@euclpts.com",
-    "addonRef": "addontemplate",
-    "addonInstance": "AddonTemplate",
-    "prefsPrefix": "extensions.zotero.addontemplate",
-    "releasepage": "https://github.com/windingwind/zotero-addon-template/releases/latest/download/zotero-addon-template.xpi",
-    "updaterdf": "https://raw.githubusercontent.com/windingwind/zotero-addon-template/bootstrap/update.json"
+    "addonName": "Ninja",
+    "addonID": "ninja@fluctus.cc",
+    "addonRef": "ninja",
+    "addonInstance": "Ninja",
+    "prefsPrefix": "extensions.ninja",
+    "releasepage": "https://github.com/Horbin-Magician/zotero-ninja/releases/latest/download/zotero-addon-template.xpi",
+    "updaterdf": "https://raw.githubusercontent.com/Horbin-Magician/zotero-ninja/bootstrap/update.json"
   },
   "main": "src/index.ts",
   "scripts": {
@@ -31,14 +31,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/windingwind/zotero-addon-template.git"
+    "url": "git+https://github.com/Horbin-Magician/zotero-ninja.git"
   },
-  "author": "windingwind",
+  "author": "Horbin",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/windingwind/zotero-addon-template/issues"
+    "url": "https://github.com/Horbin-Magician/zotero-ninja/issues"
   },
-  "homepage": "https://github.com/windingwind/zotero-addon-template#readme",
+  "homepage": "https://github.com/Horbin-Magician/zotero-ninja#readme",
   "dependencies": {
     "zotero-plugin-toolkit": "^2.1.3"
   },

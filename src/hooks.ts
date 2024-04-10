@@ -1,91 +1,74 @@
-import {
-  BasicExampleFactory,
-  HelperExampleFactory,
-  KeyExampleFactory,
-  PromptExampleFactory,
-  UIExampleFactory,
-} from "./modules/examples";
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
-import { registerPrefsScripts } from "./modules/preferenceScript";
+import { registerPrefsScripts, registerPrefs } from "./utils/prefs";
+import Views from "./modules/views"; 
 
 async function onStartup() {
+  // registerPrefs();
+
+  // Register the callback in Zotero as an item observer
+  const notifierID = Zotero.Notifier.registerObserver(
+    { notify: onNotify },
+    ["tab"]
+  );
+
+  // Unregister callback when the window closes (important to avoid a memory leak)
+  window.addEventListener(
+    "unload",
+    (e: Event) => {
+      Zotero.Notifier.unregisterObserver(notifierID);
+    },
+    false
+  );
+
+  ztoolkit.ProgressWindow.setIconURI(
+    "default",
+    `chrome://${config.addonRef}/content/icons/favicon.png`
+  );
+
   await Promise.all([
     Zotero.initializationPromise,
     Zotero.unlockPromise,
     Zotero.uiReadyPromise,
   ]);
   initLocale();
-  ztoolkit.ProgressWindow.setIconURI(
-    "default",
-    `chrome://${config.addonRef}/content/icons/favicon.png`
-  );
-
-  const popupWin = new ztoolkit.ProgressWindow(config.addonName, {
-    closeOnClick: true,
-    closeTime: -1,
-  })
-    .createLine({
-      text: getString("startup.begin"),
-      type: "default",
-      progress: 0,
-    })
-    .show();
-
-  BasicExampleFactory.registerPrefs();
-
-  BasicExampleFactory.registerNotifier();
-
-  KeyExampleFactory.registerShortcuts();
-
-  await Zotero.Promise.delay(1000);
-  popupWin.changeLine({
-    progress: 30,
-    text: `[30%] ${getString("startup.begin")}`,
-  });
-
-  UIExampleFactory.registerStyleSheet();
-
-  UIExampleFactory.registerRightClickMenuItem();
-
-  UIExampleFactory.registerRightClickMenuPopup();
-
-  UIExampleFactory.registerWindowMenuWithSeparator();
-
-  await UIExampleFactory.registerExtraColumn();
-
-  await UIExampleFactory.registerExtraColumnWithCustomCell();
-
-  await UIExampleFactory.registerCustomCellRenderer();
-
-  await UIExampleFactory.registerCustomItemBoxRow();
-
-  UIExampleFactory.registerLibraryTabPanel();
-
-  await UIExampleFactory.registerReaderTabPanel();
-
-  PromptExampleFactory.registerNormalCommandExample();
-
-  PromptExampleFactory.registerAnonymousCommandExample();
-
-  PromptExampleFactory.registerConditionalCommandExample();
-
-  await Zotero.Promise.delay(1000);
-
-  popupWin.changeLine({
-    progress: 100,
-    text: `[100%] ${getString("startup.finish")}`,
-  });
-  popupWin.startCloseTimer(5000);
-
-  addon.hooks.onDialogEvents("dialogExample");
+  
+  // 开启所有功能
+  const views = new Views()
+  const tasks = [
+    views.createRatingColumn(),
+    views.initItemSelectListener(),
+  ];
+  try {
+    await Promise.all(tasks);
+  } catch (e) {
+    ztoolkit.log("ERROR", e);
+  }
 }
 
 function onShutdown(): void {
   ztoolkit.unregisterAll();
+  ztoolkit.ItemTree.unregisterAll()
   // Remove addon object
   addon.data.alive = false;
   delete Zotero[config.addonInstance];
+
+  /* onShutdown of ZoteroStyle
+  try {
+    ztoolkit.unregisterAll()
+    ztoolkit.UI.unregisterAll()
+    
+    // 移除创建的按钮
+    document.querySelector("#zotero-style-show-hide-graph-view")?.remove();
+    // 恢复嵌套标签
+    (document.querySelector(".tag-selector") as HTMLDivElement).style.display = ""
+  } catch (e) {
+    console.log("ERROR onShutdown", e)
+  } finally {
+    addon.data.alive = false;
+    delete Zotero.ZoteroStyle;
+  }
+  */
 }
 
 /**
@@ -99,16 +82,13 @@ async function onNotify(
   extraData: { [key: string]: any }
 ) {
   // You can add your code to the corresponding notify type
-  ztoolkit.log("notify", event, type, ids, extraData);
-  if (
-    event == "select" &&
-    type == "tab" &&
-    extraData[ids[0]].type == "reader"
-  ) {
-    BasicExampleFactory.exampleNotifierCallback();
-  } else {
-    return;
-  }
+  // if (
+  //   event == "select" &&
+  //   type == "tab" &&
+  //   extraData[ids[0]].type == "reader"
+  // ) {
+  //   // Do something
+  // }
 }
 
 /**
@@ -127,44 +107,6 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
   }
 }
 
-function onShortcuts(type: string) {
-  switch (type) {
-    case "larger":
-      KeyExampleFactory.exampleShortcutLargerCallback();
-      break;
-    case "smaller":
-      KeyExampleFactory.exampleShortcutSmallerCallback();
-      break;
-    case "confliction":
-      KeyExampleFactory.exampleShortcutConflictingCallback();
-      break;
-    default:
-      break;
-  }
-}
-
-function onDialogEvents(type: string) {
-  switch (type) {
-    case "dialogExample":
-      HelperExampleFactory.dialogExample();
-      break;
-    case "clipboardExample":
-      HelperExampleFactory.clipboardExample();
-      break;
-    case "filePickerExample":
-      HelperExampleFactory.filePickerExample();
-      break;
-    case "progressWindowExample":
-      HelperExampleFactory.progressWindowExample();
-      break;
-    case "vtableExample":
-      HelperExampleFactory.vtableExample();
-      break;
-    default:
-      break;
-  }
-}
-
 // Add your hooks here. For element click, etc.
 // Keep in mind hooks only do dispatch. Don't add code that does real jobs in hooks.
 // Otherwise the code would be hard to read and maintian.
@@ -174,6 +116,4 @@ export default {
   onShutdown,
   onNotify,
   onPrefsEvent,
-  onShortcuts,
-  onDialogEvents,
 };
