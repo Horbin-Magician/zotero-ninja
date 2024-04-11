@@ -3,7 +3,7 @@
     "ninja@fluctus.cc": {
       "updates": [
         {
-          "version": "0.0.1",
+          "version": "0.1.0",
           "update_link": "https://github.com/Horbin-Magician/zotero-ninja/releases/latest/download/zotero-addon-template.xpi",
           "applications": {
             "gecko": {
@@ -12,7 +12,7 @@
           }
         },
         {
-          "version": "0.0.1",
+          "version": "0.1.0",
           "update_link": "https://github.com/Horbin-Magician/zotero-ninja/releases/latest/download/zotero-addon-template.xpi",
           "applications": {
             "zotero": {
