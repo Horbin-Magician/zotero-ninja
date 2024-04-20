@@ -2,3 +2,5 @@
 pref("__prefsPrefix__.function.ratingColumn.enable", true);
 pref("__prefsPrefix__.ratingColumn.mark", "★");
 pref("__prefsPrefix__.ratingColumn.option", "•");
+
+pref("__prefsPrefix__.function.citationColumn.enable", true);

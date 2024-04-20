@@ -265,47 +265,6 @@ export default class Views {
   // }
 
   /**
-   * 模仿Endnote评级
-   */
-  public async createRatingColumn() {
-    if (!Zotero.Prefs.get(`${config.prefsPrefix}.function.ratingColumn.enable`, true) as boolean) { return }
-
-    const key = "Rating"
-    await Zotero.ItemTreeManager.registerColumns({
-      dataKey: key,
-      label: getString(`column.${key}`),
-      staticWidth: true, // don't allow column to be resized when the tree is resized
-      minWidth: 70,
-      pluginID: config.addonID,
-      dataProvider: (item, dataKey) => ztoolkit.ExtraField.getExtraField(item, "rate") || "0",
-      renderCell: (index: any, data: any, column: any) => {
-        const span = document.createElement('span')
-        span.className = `cell ${column.className} ${key}`;
-
-        const keys = ZoteroPane.getSelectedItems().map(i=>i.key)
-        const isSelected = keys.indexOf(ZoteroPane.getSortedItems()[index].key) != -1
-        const maxNum = 5
-        const rate = Number(data)
-
-        for (let i = 0; i < maxNum; i++){
-          const text: string = (i < rate) ? "★" : (isSelected ? "•" : "")
-          const sub_span = document.createElement('span')
-          sub_span.className = "option"
-          sub_span.style.display = "inline-block";
-          sub_span.style.height = "1em";
-          sub_span.style.width = "1em";
-          sub_span.style.textAlign = "center";
-          sub_span.innerText = text
-          span.appendChild(sub_span)
-        }
-
-        return span
-      },
-      zoteroPersist: ["width", "hidden", "sortDirection"],
-    });
-  }
-
-  /**
    * 监测Item点击
    */
   public async initItemSelectListener() {
