@@ -1,7 +1,6 @@
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts, registerPrefs } from "./utils/prefs";
-import Views from "./modules/views"; 
 import ColumnManager from "./modules/columnManager";
 
 async function onStartup() {
@@ -35,13 +34,10 @@ async function onStartup() {
   initLocale();
   
   // 开启所有功能
-  const views = new Views()
   const columnManager = new ColumnManager()
   const tasks = [
-    // views.createRatingColumn(),
-    // views.createCitationColumn(),
     columnManager.registerColumns(),
-    views.initItemSelectListener(),
+    columnManager.initItemSelectListener(),
   ];
   try {
     await Promise.all(tasks);
