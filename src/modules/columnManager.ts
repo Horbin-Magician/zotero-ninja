@@ -149,7 +149,7 @@ export default class ColumnManager {
                 const citation = ztoolkit.ExtraField.getExtraField(item, "citation");
                 const citation_date = ztoolkit.ExtraField.getExtraField(item, "citation_date") as string;
 
-                if (!citation || citation_date < date){
+                if (!citation || citation_date < date || citation=="N/A") {
                     const doi = item.getField("DOI");
                     if (doi) {
                         window.fetch('https://doi.org/' + doi, {
